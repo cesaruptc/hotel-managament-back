@@ -19,9 +19,9 @@ exports.getReservations = async (req, res) => {
 };
 
 exports.createReservation = async (req, res) => {
-    //const userId = req.user.id;
+    const userId = req.user.user_id;
 
-    const { user_id, hotel_id, check_in_date, check_out_date } = req.body;
+    const { hotel_id, check_in_date, check_out_date } = req.body;
 
     const today = new Date();
     const checkInDate = new Date(check_in_date);
@@ -36,7 +36,7 @@ exports.createReservation = async (req, res) => {
 
     try {
         const { data, error } = await supabase.from('reservations').insert({
-            user_id,
+            user_id: userId,
             hotel_id,
             check_in_date,
             check_out_date
