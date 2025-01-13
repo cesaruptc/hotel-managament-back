@@ -15,6 +15,10 @@ exports.getHotels = async (req, res) => {
 exports.createHotel = async (req, res) => {
     const { name, location } = req.body;
 
+    if (!name || !location) {
+        return res.status(400).json({ error: "Name and location are required."})
+    }
+
     try {
         const { data, error } = await supabase.from('hotels').insert({ name, location }).select().single();
 
@@ -34,6 +38,10 @@ exports.createHotel = async (req, res) => {
 exports.updateHotel = async (req, res) => {
     const { id } = req.params;
     const { name, location } = req.body;
+
+    if (!id) {
+        return res.status(400).json({ error: "Hotel ID is required"})
+    }
 
     // Verificar que el usuario sea administrador (comprobar rol 'admin')
     if (req.user.role !== 'admin') {

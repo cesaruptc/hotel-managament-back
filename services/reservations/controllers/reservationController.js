@@ -10,6 +10,10 @@ exports.getReservations = async (req, res) => {
             .select('*')
             .eq('user_id', userId);
 
+        if (data.length === 0) {
+            return res.status(404).json({ message: "No reservations found for this user"})
+        }
+
         if (error) return res.status(400).json({ error: error.message });
 
         res.status(200).json(data);
@@ -22,6 +26,17 @@ exports.createReservation = async (req, res) => {
     //const userId = req.user.id;
 
     const { user_id, hotel_id, check_in_date, check_out_date } = req.body;
+
+    const today = new Date();
+    const checkInDate = new Date(check_in_date);
+
+    if (checkInDate <= today) {
+        return res.status(400).json({ error: 'Check-in date must be later than today.' });
+    }
+
+    if (new Date(check_in_date) >= new Date(check_out_date)) {
+        return res.status(400).json({ error: 'Check-out date must be later than check-in date'});
+    }
 
     try {
         const { data, error } = await supabase.from('reservations').insert({
@@ -43,6 +58,17 @@ exports.updateReservation = async (req, res) => {
     const reservationId = req.params.id;
     const userId = req.user.id;
     const { hotel_id, check_in_date, check_out_date } = req.body;
+
+    const today = new Date();
+    const checkInDate = new Date(check_in_date);
+
+    if (checkInDate <= today) {
+        return res.status(400).json({ error: 'Check-in date must be later than today.' });
+    }
+
+    if (new Date(check_in_date) >= new Date(check_out_date)) {
+        return res.status(400).json({ error: 'Check-out date must be later than check-in date'});
+    }
 
     try {
         const { data, error } = await supabase
@@ -67,7 +93,7 @@ exports.updateReservation = async (req, res) => {
 
 exports.deleteReservation = async (req, res) => {
     const reservationId = req.params.id;
-    const userId = req.user.id;
+    const userId = req.user.user_id;
 
     try {
         const { data, error } = await supabase
