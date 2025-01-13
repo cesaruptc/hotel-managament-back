@@ -18,19 +18,19 @@ exports.getReservations = async (req, res) => {
     }
 };
 
-// Crear una nueva reserva
 exports.createReservation = async (req, res) => {
-    const userId = req.user.id;
-    const { hotel_id, check_in_date, check_out_date } = req.body;
+    //const userId = req.user.id;
+
+    const { user_id, hotel_id, check_in_date, check_out_date } = req.body;
 
     try {
         const { data, error } = await supabase.from('reservations').insert({
-            user_id: userId,
+            user_id,
             hotel_id,
             check_in_date,
             check_out_date
         }).select().single();
-
+        console.log("data: ", data)
         if (error) return res.status(400).json({ error: error.message });
 
         res.status(201).json({ message: 'Reservation created successfully', data });
