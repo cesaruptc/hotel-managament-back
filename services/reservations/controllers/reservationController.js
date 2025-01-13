@@ -56,7 +56,7 @@ exports.createReservation = async (req, res) => {
 
 exports.updateReservation = async (req, res) => {
     const reservationId = req.params.id;
-    const userId = req.user.id;
+    const userId = req.user.user_id;
     const { hotel_id, check_in_date, check_out_date } = req.body;
 
     const today = new Date();
