@@ -10,10 +10,6 @@ exports.getReservations = async (req, res) => {
             .select('*')
             .eq('user_id', userId);
 
-        if (data.length === 0) {
-            return res.status(404).json({ message: "No reservations found for this user"})
-        }
-
         if (error) return res.status(400).json({ error: error.message });
 
         res.status(200).json(data);
@@ -45,7 +41,7 @@ exports.createReservation = async (req, res) => {
             check_in_date,
             check_out_date
         }).select().single();
-        console.log("data: ", data)
+
         if (error) return res.status(400).json({ error: error.message });
 
         res.status(201).json({ message: 'Reservation created successfully', data });
