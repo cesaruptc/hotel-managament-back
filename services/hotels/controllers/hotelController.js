@@ -78,3 +78,20 @@ exports.deleteHotel = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
+exports.getHotelById = async (req, res) => {
+    const {id} = req.params;
+
+    try {
+        const {data, error} = await supabase
+            .from('hotels')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) return res.status(404).json({error: 'Hotel not found jaja'});
+        res.status(200).json(data);
+    } catch (error) {
+        res.status(500).json({ error: 'Server error'});
+    }
+}
